@@ -1,0 +1,33 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.pyc
+
+# Virtual environments
+venv/
+env/
+.env
+.venv
+
+# Cache & temp files
+temp_cache/
+*.mp3
+*.mp4
+*.webm
+*.m4a
+*.tmp
+
+# Stats (local only)
+stats.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
