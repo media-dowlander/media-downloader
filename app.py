@@ -69,6 +69,19 @@ def anti_ddos_protection():
     
     IP_REQUEST_LOGS[client_ip].append(now)
 
+# YouTube bot detection bypass — use mobile/android clients on cloud servers
+YT_BYPASS_OPTS = {
+    'extractor_args': {
+        'youtube': {
+            'player_client': ['android', 'ios', 'web'],
+            'skip': ['hls', 'dash'],
+        }
+    },
+    'http_headers': {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
+    },
+}
+
 def get_format_opts(quality_key):
     opts = {
         'ffmpeg_location': FFMPEG_PATH,
@@ -76,6 +89,7 @@ def get_format_opts(quality_key):
         'noplaylist': True,
         'quiet': True,
         'no_warnings': True,
+        **YT_BYPASS_OPTS,
     }
 
     if quality_key == 'mp3_std':
@@ -154,6 +168,7 @@ def get_info():
             'quiet': True,
             'no_warnings': True,
             'ffmpeg_location': FFMPEG_PATH,
+            **YT_BYPASS_OPTS,
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
