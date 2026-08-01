@@ -2,9 +2,11 @@ import os
 import re
 import sys
 import uuid
+import base64
 import threading
 import time
 import json
+import tempfile
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_from_directory
 import yt_dlp
@@ -69,18 +71,45 @@ def anti_ddos_protection():
     
     IP_REQUEST_LOGS[client_ip].append(now)
 
-# YouTube bot detection bypass — use mobile/android clients on cloud servers
+# YouTube cookie dosyasını env'den oku ve temp'e yaz
+COOKIE_FILE_PATH = None
+
+def setup_cookies():
+    global COOKIE_FILE_PATH
+    yt_cookies_b64 = os.environ.get('YT_COOKIES', '')
+    if yt_cookies_b64:
+        try:
+            cookie_data = base64.b64decode(yt_cookies_b64).decode('utf-8')
+            tmp = tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False, encoding='utf-8')
+            tmp.write(cookie_data)
+            tmp.close()
+            COOKIE_FILE_PATH = tmp.name
+            print(f"✅ YouTube cookies yüklendi: {COOKIE_FILE_PATH}")
+        except Exception as e:
+            print(f"⚠️ Cookie yükleme hatası: {e}")
+    else:
+        print("⚠️ YT_COOKIES env değişkeni bulunamadı — bot koruması devreye girebilir")
+
+setup_cookies()
+
+# YouTube bot detection bypass
 YT_BYPASS_OPTS = {
     'extractor_args': {
         'youtube': {
             'player_client': ['android', 'ios', 'web'],
-            'skip': ['hls', 'dash'],
         }
     },
     'http_headers': {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
     },
 }
+
+def get_yt_opts_with_cookies():
+    """Cookie dosyası varsa ekle."""
+    opts = dict(YT_BYPASS_OPTS)
+    if COOKIE_FILE_PATH:
+        opts['cookiefile'] = COOKIE_FILE_PATH
+    return opts
 
 def get_format_opts(quality_key):
     opts = {
@@ -89,7 +118,7 @@ def get_format_opts(quality_key):
         'noplaylist': True,
         'quiet': True,
         'no_warnings': True,
-        **YT_BYPASS_OPTS,
+        **get_yt_opts_with_cookies(),
     }
 
     if quality_key == 'mp3_std':
@@ -168,7 +197,7 @@ def get_info():
             'quiet': True,
             'no_warnings': True,
             'ffmpeg_location': FFMPEG_PATH,
-            **YT_BYPASS_OPTS,
+            **get_yt_opts_with_cookies(),
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
