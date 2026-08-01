@@ -92,17 +92,8 @@ def setup_cookies():
 
 setup_cookies()
 
-# YouTube bot detection bypass
-YT_BYPASS_OPTS = {
-    'extractor_args': {
-        'youtube': {
-            'player_client': ['android', 'ios', 'web'],
-        }
-    },
-    'http_headers': {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
-    },
-}
+# YouTube bot detection bypass options
+YT_BYPASS_OPTS = {}
 
 def get_yt_opts_with_cookies():
     """Cookie dosyası varsa ekle."""
@@ -123,7 +114,7 @@ def get_format_opts(quality_key):
 
     if quality_key == 'mp3_std':
         opts.update({
-            'format': 'bestaudio/best',
+            'format': 'bestaudio/bestvideo+bestaudio/best',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -132,7 +123,7 @@ def get_format_opts(quality_key):
         })
     elif quality_key == 'mp3_hd':
         opts.update({
-            'format': 'bestaudio/best',
+            'format': 'bestaudio/bestvideo+bestaudio/best',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -141,22 +132,22 @@ def get_format_opts(quality_key):
         })
     elif quality_key == 'mp4_sd':
         opts.update({
-            'format': 'bestvideo[height<=480]+bestaudio/best[height<=480]/best',
+            'format': 'bestvideo[height<=480]+bestaudio/best[height<=480]/bestvideo+bestaudio/best',
             'merge_output_format': 'mp4',
         })
     elif quality_key == 'mp4_hd':
         opts.update({
-            'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/best',
+            'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo+bestaudio/best',
             'merge_output_format': 'mp4',
         })
     elif quality_key == 'mp4_2k':
         opts.update({
-            'format': 'bestvideo[height<=1440]+bestaudio/best[height<=1440]/best',
+            'format': 'bestvideo[height<=1440]+bestaudio/best[height<=1440]/bestvideo+bestaudio/best',
             'merge_output_format': 'mp4',
         })
     elif quality_key == 'mp4_4k':
         opts.update({
-            'format': 'bestvideo[height<=2160]+bestaudio/best[height<=2160]/best',
+            'format': 'bestvideo[height<=2160]+bestaudio/best[height<=2160]/bestvideo+bestaudio/best',
             'merge_output_format': 'mp4',
         })
     else:  # best

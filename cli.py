@@ -42,22 +42,22 @@ def download_link(url, choice):
         })
     elif choice == '3':  # MP4 SD 480p
         opts.update({
-            'format': 'bestvideo[height<=480]+bestaudio/best[height<=480]/best',
+            'format': 'bestvideo[height<=480]+bestaudio/best[height<=480]/bestvideo+bestaudio/best',
             'merge_output_format': 'mp4',
         })
     elif choice == '4':  # MP4 HD 1080p
         opts.update({
-            'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/best',
+            'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo+bestaudio/best',
             'merge_output_format': 'mp4',
         })
     elif choice == '5':  # MP4 2K 1440p
         opts.update({
-            'format': 'bestvideo[height<=1440]+bestaudio/best[height<=1440]/best',
+            'format': 'bestvideo[height<=1440]+bestaudio/best[height<=1440]/bestvideo+bestaudio/best',
             'merge_output_format': 'mp4',
         })
     elif choice == '6':  # MP4 4K 2160p
         opts.update({
-            'format': 'bestvideo[height<=2160]+bestaudio/best[height<=2160]/best',
+            'format': 'bestvideo[height<=2160]+bestaudio/best[height<=2160]/bestvideo+bestaudio/best',
             'merge_output_format': 'mp4',
         })
 
